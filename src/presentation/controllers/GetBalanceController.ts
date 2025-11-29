@@ -27,10 +27,7 @@ export class GetBalanceController {
       const dto = new GetBalanceDTO(accountId);
       const result = await this.useCase.execute(dto);
 
-      return NextResponse.json(
-        { balance: result.balance },
-        { status: 200 }
-      );
+      return NextResponse.json({ balance: result.balance }, { status: 200 });
     } catch (error) {
       return this.handleError(error);
     }
@@ -38,7 +35,10 @@ export class GetBalanceController {
 
   private handleError(error: unknown): NextResponse {
     if (error instanceof AppError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.statusCode }
+      );
     }
     console.error("Unexpected error:", error);
     return NextResponse.json(

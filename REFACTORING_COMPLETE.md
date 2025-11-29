@@ -24,6 +24,7 @@ Você solicitou refatoração do backend para seguir **princípios SOLID** e **a
 ### Camadas Criadas
 
 #### 1️⃣ **Domain Layer** (`src/domain/`)
+
 A camada de negócio pura, independente de frameworks.
 
 ```
@@ -37,10 +38,12 @@ domain/
 ```
 
 **Princípios Aplicados:**
+
 - ✅ SRP: Cada entidade tem responsabilidade clara
 - ✅ DIP: Interfaces abstraem implementação
 
 #### 2️⃣ **Application Layer** (`src/application/`)
+
 Implementa os casos de uso da aplicação.
 
 ```
@@ -58,11 +61,13 @@ application/
 ```
 
 **Princípios Aplicados:**
+
 - ✅ OCP: Aberto para extensão (novos usecases sem modificar existentes)
 - ✅ SRP: Cada usecase tem uma única responsabilidade
 - ✅ DIP: Depende de interfaces de repositórios
 
 #### 3️⃣ **Infrastructure Layer** (`src/infrastructure/`)
+
 Implementações concretas de persistência.
 
 ```
@@ -74,11 +79,13 @@ infrastructure/
 ```
 
 **Princípios Aplicados:**
+
 - ✅ LSP: Implementações substituem interfaces
 - ✅ DIP: Factory injeta dependências
 - ✅ ISP: Interface segregada por responsabilidade
 
 #### 4️⃣ **Presentation Layer** (`src/presentation/`)
+
 Controllers que orquestram as requisições.
 
 ```
@@ -94,10 +101,12 @@ presentation/
 ```
 
 **Princípios Aplicados:**
+
 - ✅ SRP: Cada controller trata de um caso de uso
 - ✅ OCP: Fácil adicionar novos controllers
 
 #### 5️⃣ **Shared Layer** (`src/shared/`)
+
 Código compartilhado entre camadas.
 
 ```
@@ -109,6 +118,7 @@ shared/
 ```
 
 **Classes de Erro Criadas:**
+
 - `AppError` - Erro genérico (500)
 - `ValidationError` - Validação (400)
 - `NotFoundError` - Recurso não encontrado (404)
@@ -158,33 +168,35 @@ export async function POST(request: NextRequest) {
 ## 🎯 Princípios SOLID Implementados
 
 ### ✅ S - Single Responsibility Principle
+
 **Cada classe tem uma única razão para mudar.**
 
 ```typescript
 // ❌ Antes
 class EventHandler {
-  handleDeposit() { }
-  handleWithdraw() { }
-  handleTransfer() { }
-  saveToDatabase() { }
-  validateInput() { }
+  handleDeposit() {}
+  handleWithdraw() {}
+  handleTransfer() {}
+  saveToDatabase() {}
+  validateInput() {}
 }
 
 // ✅ Depois
 class DepositUseCase {
-  execute(dto) { } // Só deposita
+  execute(dto) {} // Só deposita
 }
 
 class DepositController {
-  handle(request) { } // Só orquestra
+  handle(request) {} // Só orquestra
 }
 
 class DepositRepository {
-  save(account) { } // Só persiste
+  save(account) {} // Só persiste
 }
 ```
 
 ### ✅ O - Open/Closed Principle
+
 **Aberto para extensão, fechado para modificação.**
 
 ```typescript
@@ -198,6 +210,7 @@ RepositoryFactory.get...()
 ```
 
 ### ✅ L - Liskov Substitution Principle
+
 **Implementações de um contrato são intercambiáveis.**
 
 ```typescript
@@ -208,6 +221,7 @@ constructor(private accountRepository: IAccountRepository) {
 ```
 
 ### ✅ I - Interface Segregation Principle
+
 **Interfaces pequenas e específicas.**
 
 ```typescript
@@ -232,6 +246,7 @@ interface ITransactionRepository {
 ```
 
 ### ✅ D - Dependency Inversion Principle
+
 **Depende de abstrações, não de implementações.**
 
 ```typescript
@@ -249,16 +264,19 @@ const usecase = new DepositUseCase(repository);
 ## 🎯 Benefícios Alcançados
 
 ### 1. **Modularidade** 🔌
+
 - Cada camada é independente
 - Fácil de substituir/atualizar
 - Reutilizável em outros projetos
 
 ### 2. **Testabilidade** ✅
+
 - UseCases podem ser testados isoladamente
 - Mocks de repositórios são simples
 - Sem dependências de framework
 
 **Exemplo de Teste:**
+
 ```typescript
 it("should deposit successfully", async () => {
   const mockRepo = createMock<IAccountRepository>();
@@ -269,16 +287,19 @@ it("should deposit successfully", async () => {
 ```
 
 ### 3. **Escalabilidade** 📈
+
 - Adicionar features sem complexidade
 - Preparado para crescimento
 - Pronto para microserviços
 
 ### 4. **Manutenibilidade** 🛠️
+
 - Código organizado e previsível
 - Responsabilidades claras
 - Fácil encontrar código
 
 ### 5. **Desacoplagem** 🔗
+
 - Trocar storage sem afetar usecases
 - Trocar web framework sem afetar domínio
 - Migração a microserviços é trivial
@@ -288,6 +309,7 @@ it("should deposit successfully", async () => {
 ## 📚 Documentação Criada
 
 ### 1. **ARCHITECTURE.md** (Detalhado)
+
 - Explicação completa de cada camada
 - Como adicionar novos use cases (passo a passo)
 - Padrões de código
@@ -295,12 +317,14 @@ it("should deposit successfully", async () => {
 - ~250 linhas
 
 ### 2. **REFACTORING_SUMMARY.md** (Executivo)
+
 - O que foi feito
 - Benefícios
 - Próximos passos
 - ~200 linhas
 
 ### 3. **EXTENDING_GUIDE.md** (Prático)
+
 - Exemplo prático: Adicionar "Histórico de Transações"
 - Validação com Zod
 - Rate Limiting
@@ -308,6 +332,7 @@ it("should deposit successfully", async () => {
 - ~300 linhas
 
 ### 4. **ARCHITECTURE_DIAGRAMS.md** (Visual)
+
 - Diagramas em ASCII das camadas
 - Fluxo de requisição
 - Ciclo de vida de use cases
@@ -344,16 +369,19 @@ curl -X POST http://localhost:3000/api/event \
 ## 🔮 Próximos Passos Recomendados
 
 ### Curto Prazo (Imediato)
+
 - [ ] Instalar `@types/jest` para testes
 - [ ] Adicionar suite de testes unitários
 - [ ] Integrar com GitHub Actions para CI/CD
 
 ### Médio Prazo (1-2 semanas)
+
 - [ ] Validação com `zod` ou `joi`
 - [ ] Logging centralizado
 - [ ] Paginação de listagens
 
 ### Longo Prazo (Migração a Microserviços)
+
 - [ ] Copiar `domain/` e `application/` para novo repo
 - [ ] Adaptar controllers para novo framework
 - [ ] Implementar repositórios para nova infraestrutura
@@ -435,7 +463,7 @@ Sua aplicação agora possui:
 ✅ **Preparada para Escala** - Pronta para crescer  
 ✅ **Pronta para Microserviços** - Desacoplagem total  
 ✅ **Type-Safe** - Sem `any` types desnecessários  
-✅ **Bem Documentada** - 4 documentos de referência  
+✅ **Bem Documentada** - 4 documentos de referência
 
 ---
 

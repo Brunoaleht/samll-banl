@@ -23,7 +23,8 @@ export function useAuth(): UseAuthResult {
       }
       return response;
     } catch (err: unknown) {
-      const errorMessage = (err as Record<string, unknown>)?.error as string || "Login failed";
+      const errorMessage =
+        ((err as Record<string, unknown>)?.error as string) || "Login failed";
       setError(errorMessage);
       throw err;
     } finally {

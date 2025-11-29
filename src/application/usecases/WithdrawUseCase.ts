@@ -1,6 +1,9 @@
 import { IAccountRepository } from "@/domain/repositories/IAccountRepository";
 import { ITransactionRepository } from "@/domain/repositories/ITransactionRepository";
-import { InsufficientFundsError, NotFoundError } from "@/shared/errors/AppError";
+import {
+  InsufficientFundsError,
+  NotFoundError,
+} from "@/shared/errors/AppError";
 import { WithdrawDTO, AccountResponseDTO } from "../dtos";
 
 export class WithdrawUseCase {

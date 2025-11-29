@@ -24,10 +24,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { type } = body;
 
     if (!type) {
-      return NextResponse.json(
-        { error: "type is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "type is required" }, { status: 400 });
     }
 
     switch (type) {

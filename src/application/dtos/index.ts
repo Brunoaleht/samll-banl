@@ -3,17 +3,11 @@ export class GetBalanceDTO {
 }
 
 export class DepositDTO {
-  constructor(
-    public destination: string,
-    public amount: number
-  ) {}
+  constructor(public destination: string, public amount: number) {}
 }
 
 export class WithdrawDTO {
-  constructor(
-    public origin: string,
-    public amount: number
-  ) {}
+  constructor(public origin: string, public amount: number) {}
 }
 
 export class TransferDTO {
@@ -25,10 +19,7 @@ export class TransferDTO {
 }
 
 export class LoginDTO {
-  constructor(
-    public username: string,
-    public password: string
-  ) {}
+  constructor(public username: string, public password: string) {}
 }
 
 export class BalanceResponseDTO {
@@ -36,10 +27,7 @@ export class BalanceResponseDTO {
 }
 
 export class AccountResponseDTO {
-  constructor(
-    public id: string,
-    public balance: number
-  ) {}
+  constructor(public id: string, public balance: number) {}
 }
 
 export class LoginResponseDTO {

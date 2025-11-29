@@ -10,10 +10,16 @@ export class TransferController {
   constructor() {
     const accountRepository = RepositoryFactory.getAccountRepository();
     const transactionRepository = RepositoryFactory.getTransactionRepository();
-    this.useCase = new TransferUseCase(accountRepository, transactionRepository);
+    this.useCase = new TransferUseCase(
+      accountRepository,
+      transactionRepository
+    );
   }
 
-  async handle(request: NextRequest, body: Record<string, unknown>): Promise<NextResponse> {
+  async handle(
+    request: NextRequest,
+    body: Record<string, unknown>
+  ): Promise<NextResponse> {
     try {
       const { origin, destination, amount } = body;
 
@@ -31,13 +37,21 @@ export class TransferController {
         );
       }
 
-      const dto = new TransferDTO(origin as string, destination as string, amount as number);
+      const dto = new TransferDTO(
+        origin as string,
+        destination as string,
+        amount as number
+      );
       const result = await this.useCase.execute(dto);
 
       return NextResponse.json(
         {
-          origin: result.origin ? { id: result.origin.id, balance: result.origin.balance } : undefined,
-          destination: result.destination ? { id: result.destination.id, balance: result.destination.balance } : undefined,
+          origin: result.origin
+            ? { id: result.origin.id, balance: result.origin.balance }
+            : undefined,
+          destination: result.destination
+            ? { id: result.destination.id, balance: result.destination.balance }
+            : undefined,
         },
         { status: 201 }
       );
@@ -48,7 +62,10 @@ export class TransferController {
 
   private handleError(error: unknown): NextResponse {
     if (error instanceof AppError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.statusCode }
+      );
     }
     console.error("Unexpected error:", error);
     return NextResponse.json(

@@ -1,8 +1,5 @@
 export class Account {
-  constructor(
-    public id: string,
-    public balance: number
-  ) {}
+  constructor(public id: string, public balance: number) {}
 
   deposit(amount: number): void {
     if (amount <= 0) {

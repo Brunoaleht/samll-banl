@@ -36,25 +36,30 @@ src/
 ## Princípios SOLID Implementados
 
 ### 1. Single Responsibility Principle (SRP)
+
 - Cada classe tem uma única responsabilidade
 - Controllers orquestram requisições
 - UseCases contêm lógica de negócio
 - Repositories gerenciam persistência
 
 ### 2. Open/Closed Principle (OCP)
+
 - Entidades e usecases são abertos para extensão
 - Novos casos de uso podem ser adicionados sem modificar os existentes
 - Interfaces de repositórios permitem múltiplas implementações
 
 ### 3. Liskov Substitution Principle (LSP)
+
 - Repositórios implementam interfaces bem definidas
 - Podem ser substituídos sem quebrar o código
 
 ### 4. Interface Segregation Principle (ISP)
+
 - Interfaces pequenas e específicas
 - `IAccountRepository` e `ITransactionRepository` são segregadas
 
 ### 5. Dependency Inversion Principle (DIP)
+
 - UsesCases dependem de abstrações (interfaces), não de implementações concretas
 - RepositoryFactory injeta as dependências
 
@@ -71,6 +76,7 @@ Response
 ## Como Adicionar um Novo Use Case
 
 ### 1. Defina a Entidade (se necessário)
+
 Arquivo: `src/domain/entities/NewEntity.ts`
 
 ```typescript
@@ -80,6 +86,7 @@ export class NewEntity {
 ```
 
 ### 2. Crie o Repositório (Interface)
+
 Arquivo: `src/domain/repositories/INewRepository.ts`
 
 ```typescript
@@ -92,6 +99,7 @@ export interface INewRepository {
 ```
 
 ### 3. Implemente o Repositório
+
 Arquivo: `src/infrastructure/repositories/NewRepository.ts`
 
 ```typescript
@@ -101,7 +109,7 @@ export class NewRepository implements INewRepository {
   async findById(id: string): Promise<NewEntity | null> {
     // Implementação
   }
-  
+
   async save(entity: NewEntity): Promise<NewEntity> {
     // Implementação
   }
@@ -109,6 +117,7 @@ export class NewRepository implements INewRepository {
 ```
 
 ### 4. Crie o DTO (se necessário)
+
 Arquivo: `src/application/dtos/index.ts` (adicionar)
 
 ```typescript
@@ -118,6 +127,7 @@ export class NewActionDTO {
 ```
 
 ### 5. Crie o UseCase
+
 Arquivo: `src/application/usecases/NewActionUseCase.ts`
 
 ```typescript
@@ -134,6 +144,7 @@ export class NewActionUseCase {
 ```
 
 ### 6. Crie o Controller
+
 Arquivo: `src/presentation/controllers/NewActionController.ts`
 
 ```typescript
@@ -150,7 +161,10 @@ export class NewActionController {
     this.useCase = new NewActionUseCase(repository);
   }
 
-  async handle(request: NextRequest, body: Record<string, unknown>): Promise<NextResponse> {
+  async handle(
+    request: NextRequest,
+    body: Record<string, unknown>
+  ): Promise<NextResponse> {
     try {
       const dto = new NewActionDTO(body.param as string);
       const result = await this.useCase.execute(dto);
@@ -162,14 +176,21 @@ export class NewActionController {
 
   private handleError(error: unknown): NextResponse {
     if (error instanceof AppError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.statusCode }
+      );
     }
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 ```
 
 ### 7. Registre no RepositoryFactory
+
 Arquivo: `src/infrastructure/repositories/RepositoryFactory.ts` (adicionar)
 
 ```typescript
@@ -182,6 +203,7 @@ static getNewRepository(): INewRepository {
 ```
 
 ### 8. Exporte o Controller
+
 Arquivo: `src/presentation/controllers/index.ts` (adicionar)
 
 ```typescript
@@ -189,6 +211,7 @@ export { NewActionController } from "./NewActionController";
 ```
 
 ### 9. Crie a Rota API
+
 Arquivo: `src/app/api/new-action/route.ts`
 
 ```typescript
@@ -227,10 +250,11 @@ Para migrar um domínio para um microserviço:
 ## Padrões de Código
 
 ### UseCase Pattern
+
 ```typescript
 export class MyUseCase {
   constructor(private repo: IRepository) {}
-  
+
   async execute(dto: MyDTO): Promise<ResultDTO> {
     // Validação
     // Lógica de negócio
@@ -241,14 +265,15 @@ export class MyUseCase {
 ```
 
 ### Controller Pattern
+
 ```typescript
 export class MyController {
   private useCase: MyUseCase;
-  
+
   constructor() {
     this.useCase = new MyUseCase(RepositoryFactory.getRepository());
   }
-  
+
   async handle(request, body): Promise<NextResponse> {
     // Validação
     // Chamada usecase

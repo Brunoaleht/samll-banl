@@ -12,10 +12,7 @@ Adicione:
 
 ```typescript
 export class GetTransactionHistoryDTO {
-  constructor(
-    public accountId: string,
-    public limit?: number
-  ) {}
+  constructor(public accountId: string, public limit?: number) {}
 }
 
 export class TransactionResponseDTO {
@@ -40,12 +37,18 @@ export class TransactionHistoryResponseDTO {
 
 ```typescript
 import { ITransactionRepository } from "@/domain/repositories/ITransactionRepository";
-import { GetTransactionHistoryDTO, TransactionHistoryResponseDTO, TransactionResponseDTO } from "../dtos";
+import {
+  GetTransactionHistoryDTO,
+  TransactionHistoryResponseDTO,
+  TransactionResponseDTO,
+} from "../dtos";
 
 export class GetTransactionHistoryUseCase {
   constructor(private transactionRepository: ITransactionRepository) {}
 
-  async execute(dto: GetTransactionHistoryDTO): Promise<TransactionHistoryResponseDTO> {
+  async execute(
+    dto: GetTransactionHistoryDTO
+  ): Promise<TransactionHistoryResponseDTO> {
     const transactions = await this.transactionRepository.findByAccountId(
       dto.accountId,
       dto.limit
@@ -327,10 +330,7 @@ import { rateLimiter } from "@/lib/middleware/rateLimiter";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   if (!rateLimiter(request)) {
-    return NextResponse.json(
-      { error: "Too many requests" },
-      { status: 429 }
-    );
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
   // ... resto do código
 }

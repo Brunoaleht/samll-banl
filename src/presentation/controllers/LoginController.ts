@@ -10,7 +10,10 @@ export class LoginController {
     this.useCase = new LoginUseCase();
   }
 
-  async handle(request: NextRequest, body: Record<string, unknown>): Promise<NextResponse> {
+  async handle(
+    request: NextRequest,
+    body: Record<string, unknown>
+  ): Promise<NextResponse> {
     try {
       const { username, pass } = body;
 
@@ -32,7 +35,10 @@ export class LoginController {
 
   private handleError(error: unknown): NextResponse {
     if (error instanceof AppError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.statusCode }
+      );
     }
     console.error("Unexpected error:", error);
     return NextResponse.json(

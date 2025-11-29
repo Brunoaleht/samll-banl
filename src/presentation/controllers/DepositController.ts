@@ -13,7 +13,10 @@ export class DepositController {
     this.useCase = new DepositUseCase(accountRepository, transactionRepository);
   }
 
-  async handle(request: NextRequest, body: Record<string, unknown>): Promise<NextResponse> {
+  async handle(
+    request: NextRequest,
+    body: Record<string, unknown>
+  ): Promise<NextResponse> {
     try {
       const { destination, amount } = body;
 
@@ -45,7 +48,10 @@ export class DepositController {
 
   private handleError(error: unknown): NextResponse {
     if (error instanceof AppError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.statusCode }
+      );
     }
     console.error("Unexpected error:", error);
     return NextResponse.json(

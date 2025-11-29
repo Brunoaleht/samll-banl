@@ -10,10 +10,16 @@ export class WithdrawController {
   constructor() {
     const accountRepository = RepositoryFactory.getAccountRepository();
     const transactionRepository = RepositoryFactory.getTransactionRepository();
-    this.useCase = new WithdrawUseCase(accountRepository, transactionRepository);
+    this.useCase = new WithdrawUseCase(
+      accountRepository,
+      transactionRepository
+    );
   }
 
-  async handle(request: NextRequest, body: Record<string, unknown>): Promise<NextResponse> {
+  async handle(
+    request: NextRequest,
+    body: Record<string, unknown>
+  ): Promise<NextResponse> {
     try {
       const { origin, amount } = body;
 
@@ -45,7 +51,10 @@ export class WithdrawController {
 
   private handleError(error: unknown): NextResponse {
     if (error instanceof AppError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.statusCode }
+      );
     }
     console.error("Unexpected error:", error);
     return NextResponse.json(

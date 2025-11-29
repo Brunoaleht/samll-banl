@@ -5,79 +5,94 @@
 ### 1. **Estrutura de Camadas Implementada**
 
 #### Domain Layer (`src/domain/`)
+
 - **Entities**: `Account`, `Transaction`
 - **Repositories (Interfaces)**: `IAccountRepository`, `ITransactionRepository`
 - Totalmente independente de frameworks
 - Contém as regras de negócio centrais
 
 #### Application Layer (`src/application/`)
+
 - **UseCases**: `DepositUseCase`, `WithdrawUseCase`, `TransferUseCase`, `GetBalanceUseCase`, `ResetUseCase`, `LoginUseCase`
 - **DTOs**: Objetos de transferência de dados
 - Implementa casos de uso específicos
 - Não tem dependências do Next.js
 
 #### Infrastructure Layer (`src/infrastructure/`)
+
 - **Repositories**: Implementações dos repositórios de domínio
 - **RepositoryFactory**: Factory para injeção de dependências
 - Adapta o sistema de storage legado
 - Implementa abstrações do domain
 
 #### Presentation Layer (`src/presentation/`)
+
 - **Controllers**: Orquestram requisições e respostas
 - Cada endpoint tem seu próprio controller
 - Centraliza validação de entrada
 - Tratamento de erros padronizado
 
 #### Shared Layer (`src/shared/`)
+
 - **Custom Errors**: Classes de erro específicas do domínio
 - Códigos HTTP padronizados
 
 ### 2. **Princípios SOLID Aplicados**
 
 ✅ **Single Responsibility**: Cada classe tem uma única responsabilidade
+
 - Controllers: Orquestração
 - UseCases: Lógica de negócio
 - Repositories: Persistência
 
 ✅ **Open/Closed**: Aberto para extensão, fechado para modificação
+
 - Novos usecases sem modificar existentes
 - Interfaces bem definidas
 
 ✅ **Liskov Substitution**: Implementações de repositórios são intercambiáveis
+
 - Múltiplas implementações de storage
 
 ✅ **Interface Segregation**: Interfaces pequenas e específicas
+
 - `IAccountRepository` - Só gerencia contas
 - `ITransactionRepository` - Só gerencia transações
 
 ✅ **Dependency Inversion**: Depende de abstrações, não implementações
+
 - UseCases recebem repositórios por injeção
 - Factory centraliza criação de dependências
 
 ### 3. **Refatoração de Routes**
 
 #### `/api/login` - LoginController
+
 - Valida credenciais
 - Gera token JWT
 - Resposta: `{ token: string }`
 
 #### `/api/balance` - GetBalanceController
+
 - Autenticação obrigatória
 - Retorna saldo da conta
 - Resposta: `{ balance: number }`
 
 #### `/api/event` - Multi-controller
+
 - Roteador central para operações de conta
 - Dispatch para DepositController, WithdrawController, TransferController
 - Suporta `type: "deposit" | "withdraw" | "transfer"`
 
 #### `/api/reset` - ResetController
+
 - Limpa todas as transações
 - Autenticação obrigatória
 
 ### 4. **Hooks React Tipados**
 
 Atualizados com tipos explícitos:
+
 - `use-account.hook.ts`: Interface `UseAccountResult`
 - `use-auth.hook.ts`: Interface `UseAuthResult`
 - Sem mais `any` types
@@ -85,6 +100,7 @@ Atualizados com tipos explícitos:
 ### 5. **Sistema de Erros Customizados**
 
 Criadas classes de erro com status HTTP:
+
 - `AppError` (500)
 - `ValidationError` (400)
 - `NotFoundError` (404)
@@ -124,26 +140,31 @@ Criadas classes de erro com status HTTP:
 ## 🎯 Benefícios da Arquitetura
 
 ### Modularidade
+
 - Cada camada é independente
 - Fácil de testar em isolamento
 - Reutilizável em outros projetos
 
 ### Desacoplagem
+
 - Trocar storage sem afetar usecases
 - Trocar framework de web sem afetar domínio
 - Migração para microserviços é trivial
 
 ### Manutenibilidade
+
 - Código organizado e previsível
 - Responsabilidades claras
 - Fácil de encontrar código específico
 
 ### Escalabilidade
+
 - Adicionar novos features sem complexidade
 - Reutilizar usecases em múltiplas interfaces
 - Preparado para crescimento
 
 ### Testabilidade
+
 - UseCases podem ser testados isoladamente
 - Mocks de repositórios são simples
 - Sem dependências de framework
@@ -151,19 +172,23 @@ Criadas classes de erro com status HTTP:
 ## 🔄 Próximos Passos Recomendados
 
 1. **Testes Unitários**
+
    - Adicionar `@types/jest`
    - Testar usecases isoladamente
    - Testar validações de controllers
 
 2. **Validação de Input**
+
    - Adicionar `zod` ou `joi` para DTOs
    - Validar schema antes de UseCase
 
 3. **Logging e Observabilidade**
+
    - Sistema de logs centralizado
    - Tracing de requisições
 
 4. **Paginação**
+
    - Adicionar paginação em listagens
    - Suportar filtering e sorting
 
@@ -174,12 +199,14 @@ Criadas classes de erro com status HTTP:
 ## 📁 Arquivos Criados
 
 ### Domain
+
 - `src/domain/entities/Account.ts`
 - `src/domain/entities/Transaction.ts`
 - `src/domain/repositories/IAccountRepository.ts`
 - `src/domain/repositories/ITransactionRepository.ts`
 
 ### Application
+
 - `src/application/usecases/DepositUseCase.ts`
 - `src/application/usecases/WithdrawUseCase.ts`
 - `src/application/usecases/TransferUseCase.ts`
@@ -190,11 +217,13 @@ Criadas classes de erro com status HTTP:
 - `src/application/dtos/index.ts`
 
 ### Infrastructure
+
 - `src/infrastructure/repositories/AccountRepository.ts`
 - `src/infrastructure/repositories/TransactionRepository.ts`
 - `src/infrastructure/repositories/RepositoryFactory.ts`
 
 ### Presentation
+
 - `src/presentation/controllers/GetBalanceController.ts`
 - `src/presentation/controllers/DepositController.ts`
 - `src/presentation/controllers/WithdrawController.ts`
@@ -204,19 +233,23 @@ Criadas classes de erro com status HTTP:
 - `src/presentation/controllers/index.ts`
 
 ### Shared
+
 - `src/shared/errors/AppError.ts`
 
 ### Routes Refatoradas
+
 - `src/app/api/login/route.ts`
 - `src/app/api/balance/route.ts`
 - `src/app/api/reset/route.ts`
 - `src/app/api/event/route.ts`
 
 ### Hooks Atualizados
+
 - `src/hooks/use-account.hook.ts`
 - `src/hooks/use-auth.hook.ts`
 
 ### Documentação
+
 - `ARCHITECTURE.md` - Guia detalhado da arquitetura
 - Este arquivo
 
@@ -268,6 +301,7 @@ curl -X POST http://localhost:3000/api/event \
 ## ✨ Resultado Final
 
 Você agora tem uma aplicação com:
+
 - ✅ Arquitetura limpa e bem definida
 - ✅ Princípios SOLID implementados
 - ✅ Fácil de testar

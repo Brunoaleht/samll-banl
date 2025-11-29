@@ -6,9 +6,22 @@ export interface UseAccountResult {
   loading: boolean;
   error: string | null;
   getBalance: (accountId: string) => Promise<{ balance: number }>;
-  deposit: (destination: string, amount: number) => Promise<{ destination: { id: string; balance: number } }>;
-  withdraw: (origin: string, amount: number) => Promise<{ origin: { id: string; balance: number } }>;
-  transfer: (origin: string, destination: string, amount: number) => Promise<{ origin: { id: string; balance: number }; destination: { id: string; balance: number } }>;
+  deposit: (
+    destination: string,
+    amount: number
+  ) => Promise<{ destination: { id: string; balance: number } }>;
+  withdraw: (
+    origin: string,
+    amount: number
+  ) => Promise<{ origin: { id: string; balance: number } }>;
+  transfer: (
+    origin: string,
+    destination: string,
+    amount: number
+  ) => Promise<{
+    origin: { id: string; balance: number };
+    destination: { id: string; balance: number };
+  }>;
   reset: () => Promise<void>;
 }
 
@@ -23,7 +36,9 @@ export function useAccount(): UseAccountResult {
       const response = await apiClient.getBalance(accountId);
       return response;
     } catch (err: unknown) {
-      const errorMessage = (err as Record<string, unknown>)?.error as string || "Failed to get balance";
+      const errorMessage =
+        ((err as Record<string, unknown>)?.error as string) ||
+        "Failed to get balance";
       setError(errorMessage);
       throw err;
     } finally {
@@ -38,7 +53,8 @@ export function useAccount(): UseAccountResult {
       const response = await apiClient.deposit(destination, amount);
       return response;
     } catch (err: unknown) {
-      const errorMessage = (err as Record<string, unknown>)?.error as string || "Deposit failed";
+      const errorMessage =
+        ((err as Record<string, unknown>)?.error as string) || "Deposit failed";
       setError(errorMessage);
       throw err;
     } finally {
@@ -53,7 +69,9 @@ export function useAccount(): UseAccountResult {
       const response = await apiClient.withdraw(origin, amount);
       return response;
     } catch (err: unknown) {
-      const errorMessage = (err as Record<string, unknown>)?.error as string || "Withdraw failed";
+      const errorMessage =
+        ((err as Record<string, unknown>)?.error as string) ||
+        "Withdraw failed";
       setError(errorMessage);
       throw err;
     } finally {
@@ -69,7 +87,9 @@ export function useAccount(): UseAccountResult {
         const response = await apiClient.transfer(origin, destination, amount);
         return response;
       } catch (err: unknown) {
-        const errorMessage = (err as Record<string, unknown>)?.error as string || "Transfer failed";
+        const errorMessage =
+          ((err as Record<string, unknown>)?.error as string) ||
+          "Transfer failed";
         setError(errorMessage);
         throw err;
       } finally {
@@ -85,7 +105,8 @@ export function useAccount(): UseAccountResult {
     try {
       await apiClient.reset();
     } catch (err: unknown) {
-      const errorMessage = (err as Record<string, unknown>)?.error as string || "Reset failed";
+      const errorMessage =
+        ((err as Record<string, unknown>)?.error as string) || "Reset failed";
       setError(errorMessage);
       throw err;
     } finally {

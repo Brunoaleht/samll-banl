@@ -1,6 +1,9 @@
 import { IAccountRepository } from "@/domain/repositories/IAccountRepository";
 import { ITransactionRepository } from "@/domain/repositories/ITransactionRepository";
-import { InsufficientFundsError, NotFoundError } from "@/shared/errors/AppError";
+import {
+  InsufficientFundsError,
+  NotFoundError,
+} from "@/shared/errors/AppError";
 import { TransferDTO, EventResponseDTO, AccountResponseDTO } from "../dtos";
 
 export class TransferUseCase {
@@ -47,7 +50,10 @@ export class TransferUseCase {
     });
 
     return new EventResponseDTO(
-      new AccountResponseDTO(updatedOriginAccount.id, updatedOriginAccount.balance),
+      new AccountResponseDTO(
+        updatedOriginAccount.id,
+        updatedOriginAccount.balance
+      ),
       new AccountResponseDTO(
         updatedDestinationAccount.id,
         updatedDestinationAccount.balance
