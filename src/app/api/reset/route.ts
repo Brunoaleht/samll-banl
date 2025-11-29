@@ -1,9 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import {
   authenticateRequest,
   createUnauthorizedResponse,
-} from "@/lib/auth/middleware";
-import { getStorage } from "@/lib/storage/storage.factory";
+} from "@/modules/auth/auth.middleware";
+import { TransactionController } from "@/modules/transaction/transaction.controller";
+
+const transactionController = new TransactionController();
 
 export async function POST(request: NextRequest) {
   const auth = authenticateRequest(request);
@@ -11,14 +13,5 @@ export async function POST(request: NextRequest) {
     return createUnauthorizedResponse();
   }
 
-  try {
-    const storage = getStorage();
-    await storage.reset();
-    return NextResponse.json({}, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+  return transactionController.reset();
 }

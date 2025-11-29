@@ -2,7 +2,7 @@ import { TransactionForm } from './transaction-form';
 import { useAccountContext } from '@/contexts/account.context';
 
 interface TransactionFormContainerProps {
-  type: 'deposit' | 'withdraw' | 'transfer';
+  type?: 'deposit' | 'withdraw' | 'transfer';
 }
 
 export function TransactionFormContainer({ type }: TransactionFormContainerProps) {
@@ -21,6 +21,8 @@ export function TransactionFormContainer({ type }: TransactionFormContainerProps
       console.error('Transaction error:', err);
     }
   };
+
+  const props: 
 
   return <TransactionForm type={type} onSubmit={handleSubmit} loading={loading} error={error} />;
 }

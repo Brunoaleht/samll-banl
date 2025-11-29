@@ -1,6 +1,5 @@
-import { Dashboard } from '@/pages/dashboard';
+import { DashboardContainer } from "@/templates/dashboard/dashboard.container";
 
 export default function DashboardPage() {
-  return <Dashboard />;
+  return <DashboardContainer />;
 }
-

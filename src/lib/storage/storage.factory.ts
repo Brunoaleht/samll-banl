@@ -1,6 +1,6 @@
 import { IStorageAdapter } from "./adapter.interface";
 import { MemoryAdapter } from "./memory.adapter";
-import { PostgresAdapter } from "./postgres.adapter";
+import { TypeOrmAdapter } from "./typeorm.adapter";
 
 let storageInstance: IStorageAdapter | null = null;
 
@@ -11,8 +11,8 @@ export function getStorage(): IStorageAdapter {
 
   const storageType = process.env.STORAGE_TYPE || "memory";
 
-  if (storageType === "postgres") {
-    storageInstance = new PostgresAdapter();
+  if (storageType === "typeorm" || storageType === "postgres") {
+    storageInstance = new TypeOrmAdapter();
   } else {
     storageInstance = new MemoryAdapter();
   }

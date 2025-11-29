@@ -64,7 +64,7 @@ export class PostgresAdapter implements IStorageAdapter {
 
     return {
       id: result.rows[0].id,
-      balance: parseFloat(result.rows[0].balance),
+      balance: parseFloat(String(result.rows[0].balance)),
     };
   }
 
