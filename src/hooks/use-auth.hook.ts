@@ -1,7 +1,15 @@
 import { useState, useCallback } from "react";
 import { apiClient } from "@/lib/api/client";
 
-export function useAuth() {
+export interface UseAuthResult {
+  loading: boolean;
+  error: string | null;
+  login: (username: string, password: string) => Promise<{ token: string }>;
+  logout: () => void;
+  isAuthenticated: () => boolean;
+}
+
+export function useAuth(): UseAuthResult {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,8 +22,8 @@ export function useAuth() {
         localStorage.setItem("auth_token", response.token);
       }
       return response;
-    } catch (err: any) {
-      const errorMessage = err.error || "Login failed";
+    } catch (err: unknown) {
+      const errorMessage = (err as Record<string, unknown>)?.error as string || "Login failed";
       setError(errorMessage);
       throw err;
     } finally {

@@ -4,7 +4,6 @@ import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
   ReactNode,
 } from "react";
 import { useAuth } from "@/hooks/use-auth.hook";
@@ -27,13 +26,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     error,
   } = useAuth();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Initialize from localStorage on component mount
     if (typeof window !== "undefined") {
-      setIsAuthenticated(isAuthenticatedHook());
+      return isAuthenticatedHook();
     }
-  }, [isAuthenticatedHook]);
+    return false;
+  });
 
   const login = async (username: string, password: string) => {
     await loginHook(username, password);
