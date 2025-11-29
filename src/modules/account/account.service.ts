@@ -1,5 +1,5 @@
 import { AccountRepository } from "./account.repository";
-import { Account } from "@/lib/storage/types";
+import { Account } from "@/types";
 
 export class AccountService {
   private accountRepository: AccountRepository;

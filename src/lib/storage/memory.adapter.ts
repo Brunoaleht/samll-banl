@@ -1,5 +1,5 @@
 import { IStorageAdapter } from "./adapter.interface";
-import { Account, Transaction } from "./types";
+import { Account, Transaction } from "../../types";
 
 export class MemoryAdapter implements IStorageAdapter {
   private accounts: Map<string, Account> = new Map();

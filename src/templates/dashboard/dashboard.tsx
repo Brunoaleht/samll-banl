@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { BalanceDisplay } from "@/components/balance-display";
 import { TransactionForm } from "@/components/transaction-form";
 import { TransactionHistory } from "@/components/transaction-history";
@@ -25,16 +25,16 @@ export function Dashboard({
   onLogout,
   loading,
 }: DashboardProps) {
-  const [tempAccountId, setTempAccountId] = React.useState(accountId || "");
+  const [tempAccountId, setTempAccountId] = useState(accountId || "");
 
-  const handleAccountIdSubmit = (e: React.FormEvent) => {
+  const handleAccountIdSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (tempAccountId) {
       onAccountIdChange(tempAccountId);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (accountId) {
       onLoadBalance();
     }
@@ -72,7 +72,7 @@ export function Dashboard({
           </form>
         </section>
 
-        {accountId && (
+        {!!accountId && (
           <>
             <section className={S.getSectionClasses()}>
               <BalanceDisplay balance={balance} accountId={accountId} />

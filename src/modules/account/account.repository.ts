@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { getDataSource } from "@/lib/database/connection";
 import { AccountEntity } from "./account.entity";
-import { Account } from "@/lib/storage/types";
+import { Account } from "@/types";
 
 export class AccountRepository {
   private repository: Repository<AccountEntity> | null = null;

@@ -1,4 +1,4 @@
-import { Account, Transaction } from "./types";
+import { Account, Transaction } from "../../types";
 
 export interface IStorageAdapter {
   getAccount(accountId: string): Promise<Account | null>;

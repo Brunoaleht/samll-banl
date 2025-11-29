@@ -1,25 +1,29 @@
-import React from 'react';
-import * as S from './styles';
+import React, { FC } from "react";
+import * as S from "./styles";
 
 interface Transaction {
   id: string;
-  type: 'deposit' | 'withdraw' | 'transfer';
+  type: "deposit" | "withdraw" | "transfer";
   accountId: string;
   destinationAccountId?: string;
   amount: number;
   timestamp: Date;
 }
 
-interface TransactionHistoryProps {
+export interface TransactionHistoryProps {
   transactions: Transaction[];
 }
 
-export function TransactionHistory({ transactions }: TransactionHistoryProps) {
+export const TransactionHistory: FC<TransactionHistoryProps> = ({
+  transactions,
+}) => {
   if (transactions.length === 0) {
     return (
       <div className={S.getContainerClasses()}>
         <h3 className={S.getTitleClasses()}>Histórico de Transações</h3>
-        <p className={S.getEmptyMessageClasses()}>Nenhuma transação encontrada</p>
+        <p className={S.getEmptyMessageClasses()}>
+          Nenhuma transação encontrada
+        </p>
       </div>
     );
   }
@@ -32,21 +36,21 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
           <li key={transaction.id} className={S.getTransactionItemClasses()}>
             <div className={S.getTransactionInfoClasses()}>
               <span className={S.getTransactionTypeClasses(transaction.type)}>
-                {transaction.type === 'deposit' && 'Depósito'}
-                {transaction.type === 'withdraw' && 'Saque'}
-                {transaction.type === 'transfer' && 'Transferência'}
+                {transaction.type === "deposit" && "Depósito"}
+                {transaction.type === "withdraw" && "Saque"}
+                {transaction.type === "transfer" && "Transferência"}
               </span>
               <span className={S.getTransactionDateClasses()}>
                 {new Date(transaction.timestamp).toLocaleString()}
               </span>
             </div>
             <span className={S.getTransactionAmountClasses(transaction.type)}>
-              {transaction.type === 'withdraw' ? '-' : '+'}R$ {transaction.amount.toFixed(2)}
+              {transaction.type === "withdraw" ? "-" : "+"}R${" "}
+              {transaction.amount.toFixed(2)}
             </span>
           </li>
         ))}
       </ul>
     </div>
   );
-}
-
+};

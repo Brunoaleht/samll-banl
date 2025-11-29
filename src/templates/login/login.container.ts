@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { LoginPage, LoginProps } from "./login";
 import { useAuthContext } from "@/contexts/auth.context";
-import { createElement, useEffect } from "react";
+import { createElement, FC, useEffect } from "react";
 
-export function LoginContainer() {
+export const LoginContainer: FC = () => {
   const router = useRouter();
   const { login, loading, error, isAuthenticated } = useAuthContext();
 
@@ -31,4 +31,4 @@ export function LoginContainer() {
   };
 
   return createElement(LoginPage, props);
-}
+};

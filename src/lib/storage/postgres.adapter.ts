@@ -1,6 +1,6 @@
 import { Pool, QueryResult } from "pg";
 import { IStorageAdapter } from "./adapter.interface";
-import { Account, Transaction } from "./types";
+import { Account, Transaction } from "../../types";
 
 export class PostgresAdapter implements IStorageAdapter {
   private pool: Pool;

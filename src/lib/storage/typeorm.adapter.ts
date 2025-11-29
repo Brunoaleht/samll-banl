@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { IStorageAdapter } from "./adapter.interface";
-import { Account, Transaction } from "./types";
+import { Account, Transaction } from "../../types";
 import { getDataSource } from "@/lib/database/connection";
 import { AccountEntity } from "@/modules/account/account.entity";
 import { TransactionEntity } from "@/modules/transaction/transaction.entity";

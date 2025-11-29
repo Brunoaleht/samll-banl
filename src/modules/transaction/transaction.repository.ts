@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { getDataSource } from "@/lib/database/connection";
 import { TransactionEntity, TransactionType } from "./transaction.entity";
-import { Transaction } from "@/lib/storage/types";
+import { Transaction } from "@/types";
 
 export class TransactionRepository {
   private repository: Repository<TransactionEntity> | null = null;

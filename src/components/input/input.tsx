@@ -1,12 +1,17 @@
-import React from 'react';
-import * as S from './styles';
+import React, { FC } from "react";
+import * as S from "./styles";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
 }
 
-export function Input({ label, error, className, ...props }: InputProps) {
+export const Input: FC<InputProps> = ({
+  label,
+  error,
+  className,
+  ...props
+}) => {
   return (
     <div className={S.getInputWrapperClasses(className)}>
       {label && <label className={S.getLabelClasses()}>{label}</label>}
@@ -14,5 +19,4 @@ export function Input({ label, error, className, ...props }: InputProps) {
       {error && <span className={S.getErrorMessageClasses()}>{error}</span>}
     </div>
   );
-}
-
+};

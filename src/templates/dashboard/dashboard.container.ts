@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { Dashboard, DashboardProps } from "./dashboard";
 import { useAuthContext } from "@/contexts/auth.context";
 import { useAccountContext } from "@/contexts/account.context";
-import { createElement, useEffect } from "react";
+import { createElement, FC, useEffect } from "react";
 
-export function DashboardContainer() {
+export const DashboardContainer: FC = () => {
   const router = useRouter();
   const { logout, isAuthenticated } = useAuthContext();
   const { balance, accountId, setAccountId, loadBalance, reset, loading } =
@@ -54,4 +54,4 @@ export function DashboardContainer() {
   };
 
   return createElement(Dashboard, props);
-}
+};

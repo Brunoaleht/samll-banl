@@ -1,9 +1,16 @@
-import { TransactionHistory } from './transaction-history';
-import { useAccountContext } from '@/contexts/account.context';
+import { createElement, FC } from "react";
+import {
+  TransactionHistory,
+  TransactionHistoryProps,
+} from "./transaction-history";
+import { useAccountContext } from "@/contexts/account.context";
 
-export function TransactionHistoryContainer() {
+export const TransactionHistoryContainer: FC = () => {
   const { transactions } = useAccountContext();
 
-  return <TransactionHistory transactions={transactions} />;
-}
+  const props: TransactionHistoryProps = {
+    transactions,
+  };
 
+  return createElement(TransactionHistory, props);
+};
