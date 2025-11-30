@@ -28,7 +28,8 @@ export const TransactionForm: FC<TransactionFormProps> = ({
       return;
     }
 
-    const destinationNum = type === "transfer" ? parseInt(destination, 10) : undefined;
+    const destinationNum =
+      type === "transfer" ? parseInt(destination, 10) : undefined;
     if (type === "transfer" && isNaN(destinationNum || 0)) {
       return;
     }

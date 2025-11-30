@@ -100,7 +100,8 @@ export class AccountController {
         );
       }
 
-      const accountId = typeof account_id === "number" ? account_id : parseInt(account_id, 10);
+      const accountId =
+        typeof account_id === "number" ? account_id : parseInt(account_id, 10);
       if (isNaN(accountId)) {
         return NextResponse.json(
           { error: "account_id must be a valid number" },

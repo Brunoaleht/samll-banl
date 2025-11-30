@@ -29,7 +29,10 @@ export class TransactionController {
       }
 
       if (destination !== undefined && destination !== null) {
-        destination = typeof destination === "number" ? destination : parseInt(destination, 10);
+        destination =
+          typeof destination === "number"
+            ? destination
+            : parseInt(destination, 10);
         if (isNaN(destination)) {
           return NextResponse.json(
             { error: "destination must be a valid number" },
