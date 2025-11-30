@@ -6,6 +6,7 @@ import { useAuthContext } from "@/contexts/auth.context";
 import { useAccountContext } from "@/contexts/account.context";
 import { useAlertContext } from "@/contexts/alert.context";
 import { createElement, FC, useEffect } from "react";
+import { ApiError } from "@/lib/api/type";
 
 export const DashboardContainer: FC = () => {
   const router = useRouter();
@@ -36,10 +37,11 @@ export const DashboardContainer: FC = () => {
         createAlert({
           message: "Sistema resetado com sucesso!",
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Reset error:", err);
-        const httpCode = err.status || err.httpCode || 500;
-        const apiMessage = err.error || "Erro desconhecido";
+        const apiError = err as ApiError;
+        const httpCode = apiError.status || apiError.httpCode || 500;
+        const apiMessage = apiError.error || "Erro desconhecido";
         createAlert({
           message: "Erro ao resetar o sistema",
           apiMessage,

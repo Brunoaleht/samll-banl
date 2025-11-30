@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 export interface AlertOptions {
   message: string;
@@ -25,7 +25,7 @@ export function useAlert() {
     message: "",
   });
 
-  const createAlert = useCallback((options: AlertOptions) => {
+  const createAlert = (options: AlertOptions) => {
     setAlert({
       isOpen: true,
       message: options.message,
@@ -35,9 +35,9 @@ export function useAlert() {
       onCancel: options.onCancel,
       onClose: options.onClose,
     });
-  }, []);
+  };
 
-  const closeAlert = useCallback(() => {
+  const closeAlert = () => {
     if (alert.onClose) {
       alert.onClose();
     }
@@ -45,7 +45,7 @@ export function useAlert() {
       isOpen: false,
       message: "",
     });
-  }, [alert.onClose]);
+  };
 
   return {
     createAlert,

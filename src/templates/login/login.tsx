@@ -1,34 +1,38 @@
-import React, { FC } from "react";
+import React, { ChangeEvent, FC, FormEvent } from "react";
 import { Input } from "@/components/input";
 import { Button } from "@/components/button";
 import * as S from "./styles";
 
 export interface LoginProps {
-  onSubmit: (username: string, password: string) => void;
+  username: string;
+  password: string;
+  onUsernameChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onPasswordChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (e: FormEvent) => void;
   loading?: boolean;
 }
 
-export const LoginPage: FC<LoginProps> = ({ onSubmit, loading }) => {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(username, password);
-  };
-
+export const LoginPage: FC<LoginProps> = ({
+  username,
+  password,
+  onUsernameChange,
+  onPasswordChange,
+  onSubmit,
+  loading,
+}) => {
   return (
     <div className={S.getContainerClasses()}>
       <div className={S.getCardClasses()}>
         <h1 className={S.getTitleClasses()}>Sistema Bancário</h1>
         <p className={S.getSubtitleClasses()}>Faça login para continuar</p>
-        <form className={S.getFormClasses()} onSubmit={handleSubmit}>
+
+        <form className={S.getFormClasses()} onSubmit={onSubmit}>
           <Input
             label="Usuário"
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="admin"
+            onChange={onUsernameChange}
+            placeholder="username"
             required
             autoFocus
           />
@@ -36,8 +40,8 @@ export const LoginPage: FC<LoginProps> = ({ onSubmit, loading }) => {
             label="Senha"
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="admin"
+            onChange={onPasswordChange}
+            placeholder="password"
             required
           />
           <Button type="submit" disabled={loading}>

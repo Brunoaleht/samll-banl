@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useAuth } from "@/hooks/use-auth.hook";
 
 interface AuthContextType {
@@ -23,26 +17,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const {
     login: loginHook,
     logout: logoutHook,
-    isAuthenticated: isAuthenticatedHook,
     loading,
     error,
+    isAuthenticated: isAuthenticatedCheck,
   } = useAuth();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsAuthenticated(isAuthenticatedHook());
-    }
-  }, [isAuthenticatedHook]);
+  const isAuthenticated = isAuthenticatedCheck();
 
   const login = async (username: string, password: string) => {
     await loginHook(username, password);
-    setIsAuthenticated(true);
   };
 
   const logout = () => {
     logoutHook();
-    setIsAuthenticated(false);
   };
 
   return (

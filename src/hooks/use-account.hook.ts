@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { apiClient } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/type";
 
 export function useAccount() {
   const [loading, setLoading] = useState(false);
@@ -11,11 +12,12 @@ export function useAccount() {
     try {
       const response = await apiClient.getBalance(accountId);
       return response;
-    } catch (err: any) {
-      const errorMessage = err.error || "Failed to get balance";
-      const httpCode = err.status;
+    } catch (err: unknown) {
+      const apiError = err as ApiError;
+      const errorMessage = apiError.error || "Failed to get balance";
+      const httpCode = apiError.status || apiError.httpCode;
       setError(errorMessage);
-      throw { ...err, httpCode, errorMessage };
+      throw { ...apiError, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }
@@ -27,11 +29,12 @@ export function useAccount() {
     try {
       const response = await apiClient.deposit(destination, amount);
       return response;
-    } catch (err: any) {
-      const errorMessage = err.error || "Deposit failed";
-      const httpCode = err.status;
+    } catch (err: unknown) {
+      const apiError = err as ApiError;
+      const errorMessage = apiError.error || "Deposit failed";
+      const httpCode = apiError.status || apiError.httpCode;
       setError(errorMessage);
-      throw { ...err, httpCode, errorMessage };
+      throw { ...apiError, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }
@@ -43,11 +46,12 @@ export function useAccount() {
     try {
       const response = await apiClient.withdraw(origin, amount);
       return response;
-    } catch (err: any) {
-      const errorMessage = err.error || "Withdraw failed";
-      const httpCode = err.status;
+    } catch (err: unknown) {
+      const apiError = err as ApiError;
+      const errorMessage = apiError.error || "Withdraw failed";
+      const httpCode = apiError.status;
       setError(errorMessage);
-      throw { ...err, httpCode, errorMessage };
+      throw { ...apiError, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }
@@ -60,11 +64,12 @@ export function useAccount() {
       try {
         const response = await apiClient.transfer(origin, destination, amount);
         return response;
-      } catch (err: any) {
-        const errorMessage = err.error || "Transfer failed";
-        const httpCode = err.status;
+      } catch (err: unknown) {
+        const apiError = err as ApiError;
+        const errorMessage = apiError.error || "Transfer failed";
+        const httpCode = apiError.status;
         setError(errorMessage);
-        throw { ...err, httpCode, errorMessage };
+        throw { ...apiError, httpCode, errorMessage };
       } finally {
         setLoading(false);
       }
@@ -77,11 +82,12 @@ export function useAccount() {
     setError(null);
     try {
       await apiClient.reset();
-    } catch (err: any) {
-      const errorMessage = err.error || "Reset failed";
-      const httpCode = err.status;
+    } catch (err: unknown) {
+      const apiError = err as ApiError;
+      const errorMessage = apiError.error || "Reset failed";
+      const httpCode = apiError.status;
       setError(errorMessage);
-      throw { ...err, httpCode, errorMessage };
+      throw { ...apiError, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }
