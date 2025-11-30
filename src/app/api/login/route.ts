@@ -1,1 +1,1 @@
-export { POST } from "@/modules/auth/auth.route";
+export { POST } from "@/lib/modules/auth/auth.route";

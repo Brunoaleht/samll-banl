@@ -6,10 +6,9 @@ import * as S from "./styles";
 export interface LoginProps {
   onSubmit: (username: string, password: string) => void;
   loading?: boolean;
-  error?: string | null;
 }
 
-export const LoginPage: FC<LoginProps> = ({ onSubmit, loading, error }) => {
+export const LoginPage: FC<LoginProps> = ({ onSubmit, loading }) => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -41,7 +40,6 @@ export const LoginPage: FC<LoginProps> = ({ onSubmit, loading, error }) => {
             placeholder="admin"
             required
           />
-          {error && <div className={S.getErrorMessageClasses()}>{error}</div>}
           <Button type="submit" disabled={loading}>
             {loading ? "Entrando..." : "Entrar"}
           </Button>

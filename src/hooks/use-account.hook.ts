@@ -13,8 +13,9 @@ export function useAccount() {
       return response;
     } catch (err: any) {
       const errorMessage = err.error || "Failed to get balance";
+      const httpCode = err.status;
       setError(errorMessage);
-      throw err;
+      throw { ...err, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }
@@ -28,8 +29,9 @@ export function useAccount() {
       return response;
     } catch (err: any) {
       const errorMessage = err.error || "Deposit failed";
+      const httpCode = err.status;
       setError(errorMessage);
-      throw err;
+      throw { ...err, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }
@@ -43,8 +45,9 @@ export function useAccount() {
       return response;
     } catch (err: any) {
       const errorMessage = err.error || "Withdraw failed";
+      const httpCode = err.status;
       setError(errorMessage);
-      throw err;
+      throw { ...err, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }
@@ -59,8 +62,9 @@ export function useAccount() {
         return response;
       } catch (err: any) {
         const errorMessage = err.error || "Transfer failed";
+        const httpCode = err.status;
         setError(errorMessage);
-        throw err;
+        throw { ...err, httpCode, errorMessage };
       } finally {
         setLoading(false);
       }
@@ -75,8 +79,9 @@ export function useAccount() {
       await apiClient.reset();
     } catch (err: any) {
       const errorMessage = err.error || "Reset failed";
+      const httpCode = err.status;
       setError(errorMessage);
-      throw err;
+      throw { ...err, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }

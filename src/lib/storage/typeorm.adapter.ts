@@ -2,8 +2,8 @@ import { Repository } from "typeorm";
 import { IStorageAdapter } from "./adapter.interface";
 import { Account, Transaction } from "../../types";
 import { getDataSource } from "@/lib/database/connection";
-import { AccountEntity } from "@/modules/account/account.entity";
-import { TransactionEntity } from "@/modules/transaction/transaction.entity";
+import { AccountEntity } from "@/lib/modules/account/account.entity";
+import { TransactionEntity } from "@/lib/modules/transaction/transaction.entity";
 
 export class TypeOrmAdapter implements IStorageAdapter {
   private accountRepository: Repository<AccountEntity>;
@@ -11,7 +11,10 @@ export class TypeOrmAdapter implements IStorageAdapter {
 
   constructor() {
     // Repositories will be initialized when getDataSource is called
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.accountRepository = null as any;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.transactionRepository = null as any;
   }
 

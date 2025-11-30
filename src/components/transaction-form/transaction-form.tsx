@@ -7,14 +7,12 @@ export interface TransactionFormProps {
   type: "deposit" | "withdraw" | "transfer";
   onSubmit: (data: { amount: number; destination?: string }) => void;
   loading?: boolean;
-  error?: string | null;
 }
 
 export const TransactionForm: FC<TransactionFormProps> = ({
   type,
   onSubmit,
   loading,
-  error,
 }) => {
   const [amount, setAmount] = React.useState("");
   const [destination, setDestination] = React.useState("");
@@ -74,7 +72,6 @@ export const TransactionForm: FC<TransactionFormProps> = ({
           placeholder="0.00"
           required
         />
-        {error && <span className={S.getErrorMessageClasses()}>{error}</span>}
         <Button type="submit" disabled={loading}>
           {loading ? "Processando..." : getTitle()}
         </Button>

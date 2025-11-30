@@ -6,7 +6,7 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from "typeorm";
-import { AccountEntity } from "@/modules/account/account.entity";
+import { AccountEntity } from "@/lib/modules/account/account.entity";
 
 export type TransactionType = "deposit" | "withdraw" | "transfer";
 

@@ -1,5 +1,5 @@
 import { TransactionRepository } from "./transaction.repository";
-import { AccountService } from "@/modules/account/account.service";
+import { AccountService } from "@/lib/modules/account/account.service";
 
 export interface DepositRequest {
   destination: string;
@@ -60,7 +60,7 @@ export class TransactionService {
       throw new Error("destination is required");
     }
 
-    let account = await this.accountService.getAccountOrCreate(
+    const account = await this.accountService.getAccountOrCreate(
       request.destination,
       0
     );
@@ -127,7 +127,7 @@ export class TransactionService {
       throw new Error("Insufficient funds");
     }
 
-    let destinationAccount = await this.accountService.getAccountOrCreate(
+    const destinationAccount = await this.accountService.getAccountOrCreate(
       request.destination,
       0
     );

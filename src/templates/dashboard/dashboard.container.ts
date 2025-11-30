@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Dashboard, DashboardProps } from "./dashboard";
 import { useAuthContext } from "@/contexts/auth.context";
 import { useAccountContext } from "@/contexts/account.context";
+import { useAlertContext } from "@/contexts/alert.context";
 import { createElement, FC, useEffect } from "react";
 
 export const DashboardContainer: FC = () => {
@@ -11,6 +12,7 @@ export const DashboardContainer: FC = () => {
   const { logout, isAuthenticated } = useAuthContext();
   const { balance, accountId, setAccountId, loadBalance, reset, loading } =
     useAccountContext();
+  const { createAlert } = useAlertContext();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -31,10 +33,18 @@ export const DashboardContainer: FC = () => {
     ) {
       try {
         await reset();
-        alert("Sistema resetado com sucesso!");
-      } catch (err) {
+        createAlert({
+          message: "Sistema resetado com sucesso!",
+        });
+      } catch (err: any) {
         console.error("Reset error:", err);
-        alert("Erro ao resetar o sistema");
+        const httpCode = err.status || err.httpCode || 500;
+        const apiMessage = err.error || "Erro desconhecido";
+        createAlert({
+          message: "Erro ao resetar o sistema",
+          apiMessage,
+          httpCode,
+        });
       }
     }
   };

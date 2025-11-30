@@ -1,6 +1,9 @@
+"use client";
+
 import { createElement, FC } from "react";
 import { TransactionForm, TransactionFormProps } from "./transaction-form";
 import { useAccountContext } from "@/contexts/account.context";
+import { useAlertContext } from "@/contexts/alert.context";
 
 interface TransactionFormContainerProps {
   type?: "deposit" | "withdraw" | "transfer";
@@ -9,7 +12,21 @@ interface TransactionFormContainerProps {
 export const TransactionFormContainer: FC<TransactionFormContainerProps> = ({
   type,
 }) => {
-  const { deposit, withdraw, transfer, loading, error } = useAccountContext();
+  const { deposit, withdraw, transfer, loading } = useAccountContext();
+  const { createAlert } = useAlertContext();
+
+  const getTransactionTitle = () => {
+    switch (type) {
+      case "deposit":
+        return "Depósito";
+      case "withdraw":
+        return "Saque";
+      case "transfer":
+        return "Transferência";
+      default:
+        return "Transação";
+    }
+  };
 
   const handleSubmit = async (data: {
     amount: number;
@@ -23,8 +40,17 @@ export const TransactionFormContainer: FC<TransactionFormContainerProps> = ({
       } else if (type === "transfer" && data.destination) {
         await transfer(data.destination, data.amount);
       }
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       console.error("Transaction error:", err);
+      const httpCode = err.status || err.httpCode || 500;
+      const apiMessage = err.error || "Erro desconhecido";
+
+      createAlert({
+        message: `Erro ao realizar ${getTransactionTitle().toLowerCase()}`,
+        apiMessage,
+        httpCode,
+      });
     }
   };
 
@@ -32,7 +58,6 @@ export const TransactionFormContainer: FC<TransactionFormContainerProps> = ({
     type: type || "deposit",
     onSubmit: handleSubmit,
     loading,
-    error,
   };
 
   return createElement(TransactionForm, props);

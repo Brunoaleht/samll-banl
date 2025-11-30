@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { AccountEntity } from "@/modules/account/account.entity";
-import { TransactionEntity } from "@/modules/transaction/transaction.entity";
+import { AccountEntity } from "@/lib/modules/account/account.entity";
+import { TransactionEntity } from "@/lib/modules/transaction/transaction.entity";
 
 let dataSource: DataSource | null = null;
 

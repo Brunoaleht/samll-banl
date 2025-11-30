@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { AccountController } from "@/lib/modules/account/account.controller";
 import {
   authenticateRequest,
   createUnauthorizedResponse,
-} from "@/modules/auth/auth.middleware";
-import { AccountController } from "@/modules/account/account.controller";
+} from "@/lib/modules/auth/auth.middleware";
+import { NextRequest } from "next/server";
 
 const accountController = new AccountController();
 

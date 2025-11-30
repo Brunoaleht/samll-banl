@@ -1,6 +1,12 @@
 import { useState, useCallback } from "react";
 import { apiClient } from "@/lib/api/client";
 
+export interface AuthError {
+  message: string;
+  apiMessage?: string;
+  httpCode?: number;
+}
+
 export function useAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,8 +22,9 @@ export function useAuth() {
       return response;
     } catch (err: any) {
       const errorMessage = err.error || "Login failed";
+      const httpCode = err.status;
       setError(errorMessage);
-      throw err;
+      throw { ...err, httpCode, errorMessage };
     } finally {
       setLoading(false);
     }
