@@ -9,22 +9,22 @@ export class AccountRepository {
     this.storage = getStorage();
   }
 
-  async findById(accountId: string): Promise<Account | null> {
+  async findById(accountId: number): Promise<Account | null> {
     return this.storage.getAccount(accountId);
   }
 
   async create(
-    accountId: string,
+    accountId: number,
     initialBalance: number = 0
   ): Promise<Account> {
     return this.storage.createAccount(accountId, initialBalance);
   }
 
-  async updateBalance(accountId: string, newBalance: number): Promise<Account> {
+  async updateBalance(accountId: number, newBalance: number): Promise<Account> {
     return this.storage.updateAccountBalance(accountId, newBalance);
   }
 
-  async exists(accountId: string): Promise<boolean> {
+  async exists(accountId: number): Promise<boolean> {
     const acc = await this.storage.getAccount(accountId);
     return !!acc;
   }

@@ -17,13 +17,13 @@ export class TypeOrmAdapter implements IStorageAdapter {
     this.transactionRepo = ds.getRepository(TransactionEntity);
   }
 
-  async getAccount(accountId: string): Promise<Account | null> {
+  async getAccount(accountId: number): Promise<Account | null> {
     await this.init();
     const acc = await this.accountRepo!.findOne({ where: { id: accountId } });
     return acc ? { id: acc.id, balance: Number(acc.balance) } : null;
   }
 
-  async createAccount(accountId: string, initialBalance = 0): Promise<Account> {
+  async createAccount(accountId: number, initialBalance = 0): Promise<Account> {
     await this.init();
 
     const account = this.accountRepo!.create({
@@ -36,7 +36,7 @@ export class TypeOrmAdapter implements IStorageAdapter {
     return { id: account.id, balance: Number(account.balance) };
   }
 
-  async updateAccountBalance(accountId: string, newBalance: number) {
+  async updateAccountBalance(accountId: number, newBalance: number) {
     await this.init();
     await this.accountRepo!.update({ id: accountId }, { balance: newBalance });
 
@@ -66,7 +66,7 @@ export class TypeOrmAdapter implements IStorageAdapter {
     };
   }
 
-  async getTransactions(accountId: string, limit = 10) {
+  async getTransactions(accountId: number, limit = 10) {
     await this.init();
 
     const txs = await this.transactionRepo!.find({

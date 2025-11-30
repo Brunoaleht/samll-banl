@@ -18,20 +18,19 @@ export class TransactionEntity {
   @Column({ type: "varchar", length: 50 })
   type!: TransactionType;
 
-  @Column({ type: "varchar", length: 255, name: "account_id" })
-  accountId!: string;
+  @Column({ type: "int", name: "account_id" })
+  accountId!: number;
 
   @ManyToOne(() => AccountEntity)
   @JoinColumn({ name: "account_id" })
   account!: AccountEntity;
 
   @Column({
-    type: "varchar",
-    length: 255,
+    type: "int",
     nullable: true,
     name: "destination_account_id",
   })
-  destinationAccountId?: string;
+  destinationAccountId?: number;
 
   @ManyToOne(() => AccountEntity, { nullable: true })
   @JoinColumn({ name: "destination_account_id" })

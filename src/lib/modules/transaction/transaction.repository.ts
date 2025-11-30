@@ -16,7 +16,7 @@ export class TransactionRepository {
   }
 
   async findByAccountId(
-    accountId: string,
+    accountId: number,
     limit: number = 10
   ): Promise<Transaction[]> {
     return this.storage.getTransactions(accountId, limit);

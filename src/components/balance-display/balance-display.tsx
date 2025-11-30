@@ -3,7 +3,7 @@ import * as S from "./styles";
 
 interface BalanceDisplayProps {
   balance: number | null;
-  accountId: string | null;
+  accountId: number | null;
 }
 
 export const BalanceDisplay: FC<BalanceDisplayProps> = ({

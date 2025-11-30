@@ -2,15 +2,15 @@ import { IStorageAdapter } from "./adapter.interface";
 import { Account, Transaction } from "../../types";
 
 export class MemoryAdapter implements IStorageAdapter {
-  private accounts: Map<string, Account> = new Map();
+  private accounts: Map<number, Account> = new Map();
   private transactions: Transaction[] = [];
 
-  async getAccount(accountId: string): Promise<Account | null> {
+  async getAccount(accountId: number): Promise<Account | null> {
     return this.accounts.get(accountId) || null;
   }
 
   async createAccount(
-    accountId: string,
+    accountId: number,
     initialBalance: number = 0
   ): Promise<Account> {
     const account: Account = {
@@ -22,7 +22,7 @@ export class MemoryAdapter implements IStorageAdapter {
   }
 
   async updateAccountBalance(
-    accountId: string,
+    accountId: number,
     newBalance: number
   ): Promise<Account> {
     const account = this.accounts.get(accountId);
@@ -47,7 +47,7 @@ export class MemoryAdapter implements IStorageAdapter {
   }
 
   async getTransactions(
-    accountId: string,
+    accountId: number,
     limit: number = 10
   ): Promise<Transaction[]> {
     return this.transactions

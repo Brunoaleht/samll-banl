@@ -12,22 +12,25 @@ import { useAccount } from "@/hooks/use-account.hook";
 interface Transaction {
   id: string;
   type: "deposit" | "withdraw" | "transfer";
-  accountId: string;
-  destinationAccountId?: string;
+  accountId: number;
+  destinationAccountId?: number;
   amount: number;
   timestamp: Date;
 }
 
 interface AccountContextType {
   balance: number | null;
-  accountId: string | null;
+  accountId: number | null;
   transactions: Transaction[];
-  setAccountId: (id: string) => void;
+  setAccountId: (id: number) => void;
   loadBalance: () => Promise<void>;
+  loadAccountData: (id: number) => Promise<void>;
+  createAccount: (id: number, initialBalance?: number) => Promise<void>;
   deposit: (amount: number) => Promise<void>;
   withdraw: (amount: number) => Promise<void>;
-  transfer: (destination: string, amount: number) => Promise<void>;
+  transfer: (destination: number, amount: number) => Promise<void>;
   reset: () => Promise<void>;
+  logout: () => void;
   loading: boolean;
   error: string | null;
 }
@@ -37,6 +40,8 @@ const AccountContext = createContext<AccountContextType | undefined>(undefined);
 export function AccountProvider({ children }: { children: ReactNode }) {
   const {
     getBalance,
+    getAccountData,
+    createAccount: createAccountHook,
     deposit: depositHook,
     withdraw: withdrawHook,
     transfer: transferHook,
@@ -46,10 +51,10 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   } = useAccount();
 
   const [balance, setBalance] = useState<number | null>(null);
-  const [accountId, setAccountIdState] = useState<string | null>(null);
+  const [accountId, setAccountIdState] = useState<number | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const setAccountId = useCallback((id: string) => {
+  const setAccountId = useCallback((id: number) => {
     setAccountIdState(id);
   }, []);
 
@@ -63,6 +68,34 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       throw err;
     }
   }, [accountId, getBalance]);
+
+  const loadAccountData = useCallback(
+    async (id: number) => {
+      try {
+        const response = await getAccountData(id);
+        setAccountIdState(id);
+        setBalance(response.balance);
+      } catch (err) {
+        console.error("Failed to load account data:", err);
+        throw err;
+      }
+    },
+    [getAccountData]
+  );
+
+  const createAccount = useCallback(
+    async (id: number, initialBalance?: number) => {
+      try {
+        const response = await createAccountHook(id, initialBalance);
+        setAccountIdState(id);
+        setBalance(response.balance);
+      } catch (err) {
+        console.error("Failed to create account:", err);
+        throw err;
+      }
+    },
+    [createAccountHook]
+  );
 
   const deposit = useCallback(
     async (amount: number) => {
@@ -93,7 +126,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   );
 
   const transfer = useCallback(
-    async (destination: string, amount: number) => {
+    async (destination: number, amount: number) => {
       if (!accountId) return;
       try {
         const response = await transferHook(accountId, destination, amount);
@@ -117,6 +150,12 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     }
   }, [resetHook]);
 
+  const logout = useCallback(() => {
+    setBalance(null);
+    setAccountIdState(null);
+    setTransactions([]);
+  }, []);
+
   return (
     <AccountContext.Provider
       value={{
@@ -125,10 +164,13 @@ export function AccountProvider({ children }: { children: ReactNode }) {
         transactions,
         setAccountId,
         loadBalance,
+        loadAccountData,
+        createAccount,
         deposit,
         withdraw,
         transfer,
         reset,
+        logout,
         loading,
         error,
       }}

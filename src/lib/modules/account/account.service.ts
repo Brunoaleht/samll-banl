@@ -8,8 +8,9 @@ export class AccountService {
     this.accountRepository = accountRepository || new AccountRepository();
   }
 
-  async getAccount(accountId: string): Promise<Account> {
+  async getAccount(accountId: number): Promise<Account> {
     const account = await this.accountRepository.findById(accountId);
+
     if (!account) {
       throw new Error("Account not found");
     }
@@ -17,7 +18,7 @@ export class AccountService {
   }
 
   async getAccountOrCreate(
-    accountId: string,
+    accountId: number,
     initialBalance: number = 0
   ): Promise<Account> {
     const account = await this.accountRepository.findById(accountId);
@@ -28,7 +29,7 @@ export class AccountService {
   }
 
   async createAccount(
-    accountId: string,
+    accountId: number,
     initialBalance: number = 0
   ): Promise<Account> {
     const exists = await this.accountRepository.exists(accountId);
@@ -38,7 +39,7 @@ export class AccountService {
     return await this.accountRepository.create(accountId, initialBalance);
   }
 
-  async updateBalance(accountId: string, newBalance: number): Promise<Account> {
+  async updateBalance(accountId: number, newBalance: number): Promise<Account> {
     return await this.accountRepository.updateBalance(accountId, newBalance);
   }
 

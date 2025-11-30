@@ -6,7 +6,7 @@ export function useAccount() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getBalance = useCallback(async (accountId: string) => {
+  const getBalance = useCallback(async (accountId: number) => {
     setLoading(true);
     setError(null);
     try {
@@ -23,7 +23,47 @@ export function useAccount() {
     }
   }, []);
 
-  const deposit = useCallback(async (destination: string, amount: number) => {
+  const getAccountData = useCallback(async (accountId: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient.getAccount(accountId);
+      return response;
+    } catch (err: unknown) {
+      const apiError = err as ApiError;
+      const errorMessage = apiError.error || "Failed to get account data";
+      const httpCode = apiError.status || apiError.httpCode;
+      setError(errorMessage);
+      throw { ...apiError, httpCode, errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const createAccount = useCallback(
+    async (accountId: number, initialBalance?: number) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await apiClient.createAccount(
+          accountId,
+          initialBalance
+        );
+        return response;
+      } catch (err: unknown) {
+        const apiError = err as ApiError;
+        const errorMessage = apiError.error || "Failed to create account";
+        const httpCode = apiError.status || apiError.httpCode;
+        setError(errorMessage);
+        throw { ...apiError, httpCode, errorMessage };
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  const deposit = useCallback(async (destination: number, amount: number) => {
     setLoading(true);
     setError(null);
     try {
@@ -40,7 +80,7 @@ export function useAccount() {
     }
   }, []);
 
-  const withdraw = useCallback(async (origin: string, amount: number) => {
+  const withdraw = useCallback(async (origin: number, amount: number) => {
     setLoading(true);
     setError(null);
     try {
@@ -58,7 +98,7 @@ export function useAccount() {
   }, []);
 
   const transfer = useCallback(
-    async (origin: string, destination: string, amount: number) => {
+    async (origin: number, destination: number, amount: number) => {
       setLoading(true);
       setError(null);
       try {
@@ -95,6 +135,8 @@ export function useAccount() {
 
   return {
     getBalance,
+    getAccountData,
+    createAccount,
     deposit,
     withdraw,
     transfer,

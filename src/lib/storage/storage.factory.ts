@@ -2,24 +2,23 @@ import { IStorageAdapter } from "./adapter.interface";
 import { MemoryAdapter } from "./memory.adapter";
 import { TypeOrmAdapter } from "./typeorm.adapter";
 
-let storageInstance: IStorageAdapter | null = null;
+const globalForStorage = globalThis as unknown as {
+  storageInstance?: IStorageAdapter;
+};
 
 export function getStorage(): IStorageAdapter {
-  if (storageInstance) {
-    return storageInstance;
+  if (!globalForStorage.storageInstance) {
+    const storageType = process.env.STORAGE_TYPE || "memory";
+
+    globalForStorage.storageInstance =
+      storageType === "typeorm" || storageType === "postgres"
+        ? new TypeOrmAdapter()
+        : new MemoryAdapter();
   }
 
-  const storageType = process.env.STORAGE_TYPE || "memory";
-
-  if (storageType === "typeorm" || storageType === "postgres") {
-    storageInstance = new TypeOrmAdapter();
-  } else {
-    storageInstance = new MemoryAdapter();
-  }
-
-  return storageInstance;
+  return globalForStorage.storageInstance;
 }
 
 export function resetStorage(): void {
-  storageInstance = null;
+  globalForStorage.storageInstance = undefined;
 }

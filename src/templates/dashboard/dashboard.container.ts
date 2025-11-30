@@ -11,8 +11,17 @@ import { ApiError } from "@/lib/api/type";
 export const DashboardContainer: FC = () => {
   const router = useRouter();
   const { logout, isAuthenticated } = useAuthContext();
-  const { balance, accountId, setAccountId, loadBalance, reset, loading } =
-    useAccountContext();
+  const {
+    balance,
+    accountId,
+    setAccountId,
+    loadBalance,
+    loadAccountData,
+    createAccount,
+    reset,
+    logout: logoutAccount,
+    loading,
+  } = useAccountContext();
   const { createAlert } = useAlertContext();
 
   useEffect(() => {
@@ -37,8 +46,54 @@ export const DashboardContainer: FC = () => {
     }
   };
 
+  const handleLoadAccountData = async (id: number) => {
+    try {
+      await loadAccountData(id);
+      createAlert({
+        message: `Conta ${id} carregada com sucesso!`,
+      });
+    } catch (err: unknown) {
+      console.error("Load account data error:", err);
+      const apiError = err as ApiError;
+      const httpCode = apiError.status;
+      const apiMessage = apiError.error || "Erro desconhecido";
+      createAlert({
+        message: "Erro ao carregar conta",
+        apiMessage,
+        httpCode,
+      });
+    }
+  };
+
+  const handleCreateAccount = async (id: number, initialBalance?: number) => {
+    try {
+      await createAccount(id, initialBalance);
+      createAlert({
+        message: `Conta ${id} criada com sucesso!`,
+      });
+    } catch (err: unknown) {
+      console.error("Create account error:", err);
+      const apiError = err as ApiError;
+      const httpCode = apiError.status;
+      const apiMessage = apiError.error || "Erro desconhecido";
+      createAlert({
+        message: "Erro ao criar conta",
+        apiMessage,
+        httpCode,
+      });
+    }
+  };
+
+  const handleExitAccount = () => {
+    logoutAccount();
+    createAlert({
+      message: "Saio da conta com Success!",
+    });
+  };
+
   const handleLogout = () => {
     logout();
+    logoutAccount();
     router.push("/login");
   };
 
@@ -75,10 +130,13 @@ export const DashboardContainer: FC = () => {
     balance,
     accountId,
     onAccountIdChange: setAccountId,
-    loading,
+    onLoadAccountData: handleLoadAccountData,
+    onCreateAccount: handleCreateAccount,
     onLoadBalance: handleLoadBalance,
+    onExitAccount: handleExitAccount,
     onLogout: handleLogout,
     onReset: handleReset,
+    loading,
   };
 
   return createElement(Dashboard, props);

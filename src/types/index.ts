@@ -1,13 +1,13 @@
 export interface Account {
-  id: string;
+  id: number;
   balance: number;
 }
 
 export interface Transaction {
   id: string;
   type: "deposit" | "withdraw" | "transfer";
-  accountId: string;
-  destinationAccountId?: string;
+  accountId: number;
+  destinationAccountId?: number;
   amount: number;
   timestamp: Date;
 }

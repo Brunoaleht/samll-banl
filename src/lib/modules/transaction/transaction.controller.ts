@@ -11,13 +11,31 @@ export class TransactionController {
   async handleEvent(request: NextRequest): Promise<NextResponse> {
     try {
       const body = await request.json();
-      const { type, origin, destination, amount } = body;
+      let { type, origin, destination, amount } = body;
 
       if (!type || !amount) {
-        return NextResponse.json(
-          { error: "Invalid request" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+      }
+
+      // Converter origin e destination para number se fornecidos
+      if (origin !== undefined && origin !== null) {
+        origin = typeof origin === "number" ? origin : parseInt(origin, 10);
+        if (isNaN(origin)) {
+          return NextResponse.json(
+            { error: "origin must be a valid number" },
+            { status: 400 }
+          );
+        }
+      }
+
+      if (destination !== undefined && destination !== null) {
+        destination = typeof destination === "number" ? destination : parseInt(destination, 10);
+        if (isNaN(destination)) {
+          return NextResponse.json(
+            { error: "destination must be a valid number" },
+            { status: 400 }
+          );
+        }
       }
 
       if (type === "deposit") {
@@ -68,10 +86,7 @@ export class TransactionController {
           error.message === "origin is required" ||
           error.message === "origin and destination are required"
         ) {
-          return NextResponse.json(
-            { error: error.message },
-            { status: 400 }
-          );
+          return NextResponse.json({ error: error.message }, { status: 400 });
         }
       }
       console.error("Event error:", error);
@@ -86,6 +101,7 @@ export class TransactionController {
     try {
       await this.transactionService.reset();
       return NextResponse.json({}, { status: 200 });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return NextResponse.json(
         { error: "Internal server error" },
@@ -94,4 +110,3 @@ export class TransactionController {
     }
   }
 }
-

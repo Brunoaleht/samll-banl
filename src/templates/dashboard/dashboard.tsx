@@ -1,16 +1,19 @@
-import React, { FormEvent, useEffect, useState } from "react";
 import { BalanceDisplay } from "@/components/balance-display";
 import { TransactionForm } from "@/components/transaction-form";
 import { TransactionHistory } from "@/components/transaction-history";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 import * as S from "./styles";
+import { useState } from "react";
 
 export interface DashboardProps {
   balance: number | null;
-  accountId: string | null;
-  onAccountIdChange: (id: string) => void;
+  accountId: number | null;
+  onAccountIdChange: (id: number) => void;
+  onLoadAccountData: (id: number) => void;
+  onCreateAccount: (id: number, initialBalance?: number) => void;
   onLoadBalance: () => void;
+  onExitAccount: () => void;
   onReset: () => void;
   onLogout: () => void;
   loading?: boolean;
@@ -20,11 +23,42 @@ export function Dashboard({
   balance,
   accountId,
   onAccountIdChange,
+  onLoadAccountData,
+  onCreateAccount,
   onLoadBalance,
+  onExitAccount,
   onReset,
   onLogout,
   loading,
 }: DashboardProps) {
+  const [searchAccountId, setSearchAccountId] = useState("");
+  const [newAccountId, setNewAccountId] = useState("");
+  const [newAccountBalance, setNewAccountBalance] = useState("");
+
+  const handleSearchAccount = () => {
+    if (searchAccountId.trim()) {
+      const accountId = parseInt(searchAccountId, 10);
+      if (!isNaN(accountId)) {
+        onLoadAccountData(accountId);
+        setSearchAccountId("");
+      }
+    }
+  };
+
+  const handleCreateAccount = () => {
+    if (newAccountId.trim()) {
+      const accountId = parseInt(newAccountId, 10);
+      if (!isNaN(accountId)) {
+        const initialBalance = newAccountBalance
+          ? parseFloat(newAccountBalance)
+          : 0;
+        onCreateAccount(accountId, initialBalance);
+        setNewAccountId("");
+        setNewAccountBalance("");
+      }
+    }
+  };
+
   return (
     <div className={S.getContainerClasses()}>
       <header className={S.getHeaderClasses()}>
@@ -37,25 +71,83 @@ export function Dashboard({
       </header>
 
       <main className={S.getContentClasses()}>
-        <section className={S.getSectionClasses()}>
-          <h2 className={S.getSectionTitleClasses()}>Configurar Conta</h2>
-          <div className={S.getAccountFormClasses()}>
-            <Input
-              label="ID da Conta"
-              type="text"
-              value={`${accountId}`}
-              onChange={(e) => onAccountIdChange(e.target.value)}
-              placeholder="Ex: 100"
-              required
-            />
-            <Button type="submit" disabled={loading} onClick={onLoadBalance}>
-              Conta
-            </Button>
-          </div>
-        </section>
-
-        {!!accountId && (
+        {!accountId ? (
           <>
+            <section className={S.getSectionClasses()}>
+              <h2 className={S.getSectionTitleClasses()}>Buscar Conta</h2>
+              <div className={S.getAccountFormClasses()}>
+                <Input
+                  label="ID da Conta"
+                  type="text"
+                  value={searchAccountId}
+                  onChange={(e) => setSearchAccountId(e.target.value)}
+                  placeholder="Ex: 100"
+                  required
+                />
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  onClick={handleSearchAccount}
+                >
+                  Buscar Conta
+                </Button>
+              </div>
+            </section>
+
+            <section className={S.getSectionClasses()}>
+              <h2 className={S.getSectionTitleClasses()}>Criar Nova Conta</h2>
+              <div className={S.getAccountFormClasses()}>
+                <Input
+                  label="ID da Conta"
+                  type="text"
+                  value={newAccountId}
+                  onChange={(e) => setNewAccountId(e.target.value)}
+                  placeholder="Ex: 100"
+                  required
+                />
+                <Input
+                  label="Saldo Inicial (opcional)"
+                  type="number"
+                  value={newAccountBalance}
+                  onChange={(e) => setNewAccountBalance(e.target.value)}
+                  placeholder="0"
+                />
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  onClick={handleCreateAccount}
+                >
+                  Criar Conta
+                </Button>
+              </div>
+            </section>
+          </>
+        ) : (
+          <>
+            <section className={S.getSectionClasses()}>
+              <div
+                className={S.getAccountFormClasses()}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <p style={{ fontWeight: "bold", marginBottom: "8px" }}>
+                    Conta: {accountId}
+                  </p>
+                </div>
+                <Button
+                  variant="secondary"
+                  onClick={onExitAccount}
+                  disabled={loading}
+                >
+                  Sair da Conta
+                </Button>
+              </div>
+            </section>
+
             <section className={S.getSectionClasses()}>
               <BalanceDisplay balance={balance} accountId={accountId} />
             </section>

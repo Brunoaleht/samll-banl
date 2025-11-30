@@ -2,42 +2,42 @@ import { TransactionRepository } from "./transaction.repository";
 import { AccountService } from "@/lib/modules/account/account.service";
 
 export interface DepositRequest {
-  destination: string;
+  destination: number;
   amount: number;
 }
 
 export interface WithdrawRequest {
-  origin: string;
+  origin: number;
   amount: number;
 }
 
 export interface TransferRequest {
-  origin: string;
-  destination: string;
+  origin: number;
+  destination: number;
   amount: number;
 }
 
 export interface DepositResponse {
   destination: {
-    id: string;
+    id: number;
     balance: number;
   };
 }
 
 export interface WithdrawResponse {
   origin: {
-    id: string;
+    id: number;
     balance: number;
   };
 }
 
 export interface TransferResponse {
   origin: {
-    id: string;
+    id: number;
     balance: number;
   };
   destination: {
-    id: string;
+    id: number;
     balance: number;
   };
 }
@@ -60,10 +60,7 @@ export class TransactionService {
       throw new Error("destination is required");
     }
 
-    const account = await this.accountService.getAccountOrCreate(
-      request.destination,
-      0
-    );
+    const account = await this.accountService.getAccount(request.destination);
 
     const newBalance = account.balance + request.amount;
     const updatedAccount = await this.accountService.updateBalance(
@@ -127,9 +124,8 @@ export class TransactionService {
       throw new Error("Insufficient funds");
     }
 
-    const destinationAccount = await this.accountService.getAccountOrCreate(
-      request.destination,
-      0
+    const destinationAccount = await this.accountService.getAccount(
+      request.destination
     );
 
     const newOriginBalance = originAccount.balance - request.amount;

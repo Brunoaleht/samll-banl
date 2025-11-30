@@ -50,7 +50,7 @@ export class ApiClient {
     });
   }
 
-  async getBalance(accountId: string): Promise<{ balance: number }> {
+  async getBalance(accountId: number): Promise<{ balance: number }> {
     return this.request<{ balance: number }>(
       `/balance?account_id=${accountId}`,
       {
@@ -59,13 +59,37 @@ export class ApiClient {
     );
   }
 
+  async getAccount(
+    accountId: number
+  ): Promise<{ id: number; balance: number }> {
+    return this.request<{ id: number; balance: number }>(
+      `/account?account_id=${accountId}`,
+      {
+        method: "GET",
+      }
+    );
+  }
+
+  async createAccount(
+    accountId: number,
+    balance?: number
+  ): Promise<{ id: number; balance: number }> {
+    return this.request<{ id: number; balance: number }>("/account", {
+      method: "POST",
+      body: JSON.stringify({
+        account_id: accountId,
+        balance,
+      }),
+    });
+  }
+
   async deposit(
-    destination: string,
+    destination: number,
     amount: number
   ): Promise<{
-    destination: { id: string; balance: number };
+    destination: { id: number; balance: number };
   }> {
-    return this.request<{ destination: { id: string; balance: number } }>(
+    return this.request<{ destination: { id: number; balance: number } }>(
       "/event",
       {
         method: "POST",
@@ -79,12 +103,12 @@ export class ApiClient {
   }
 
   async withdraw(
-    origin: string,
+    origin: number,
     amount: number
   ): Promise<{
-    origin: { id: string; balance: number };
+    origin: { id: number; balance: number };
   }> {
-    return this.request<{ origin: { id: string; balance: number } }>("/event", {
+    return this.request<{ origin: { id: number; balance: number } }>("/event", {
       method: "POST",
       body: JSON.stringify({
         type: "withdraw",
@@ -95,16 +119,16 @@ export class ApiClient {
   }
 
   async transfer(
-    origin: string,
-    destination: string,
+    origin: number,
+    destination: number,
     amount: number
   ): Promise<{
-    origin: { id: string; balance: number };
-    destination: { id: string; balance: number };
+    origin: { id: number; balance: number };
+    destination: { id: number; balance: number };
   }> {
     return this.request<{
-      origin: { id: string; balance: number };
-      destination: { id: string; balance: number };
+      origin: { id: number; balance: number };
+      destination: { id: number; balance: number };
     }>("/event", {
       method: "POST",
       body: JSON.stringify({

@@ -5,7 +5,7 @@ import * as S from "./styles";
 
 export interface TransactionFormProps {
   type: "deposit" | "withdraw" | "transfer";
-  onSubmit: (data: { amount: number; destination?: string }) => void;
+  onSubmit: (data: { amount: number; destination?: number }) => void;
   loading?: boolean;
 }
 
@@ -28,9 +28,14 @@ export const TransactionForm: FC<TransactionFormProps> = ({
       return;
     }
 
+    const destinationNum = type === "transfer" ? parseInt(destination, 10) : undefined;
+    if (type === "transfer" && isNaN(destinationNum || 0)) {
+      return;
+    }
+
     onSubmit({
       amount: amountNum,
-      ...(type === "transfer" && { destination }),
+      ...(type === "transfer" && { destination: destinationNum }),
     });
 
     setAmount("");
