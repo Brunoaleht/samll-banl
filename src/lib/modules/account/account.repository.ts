@@ -1,71 +1,35 @@
-import { Repository } from "typeorm";
-import { getDataSource } from "@/lib/database/connection";
-import { AccountEntity } from "./account.entity";
 import { Account } from "@/types";
+import { IStorageAdapter } from "@/lib/storage/adapter.interface";
+import { getStorage } from "@/lib/storage/storage.factory";
 
 export class AccountRepository {
-  private repository: Repository<AccountEntity> | null = null;
+  private storage: IStorageAdapter;
 
-  private async getRepository(): Promise<Repository<AccountEntity>> {
-    if (!this.repository) {
-      const dataSource = await getDataSource();
-      this.repository = dataSource.getRepository(AccountEntity);
-    }
-    return this.repository;
+  constructor() {
+    this.storage = getStorage();
   }
 
   async findById(accountId: string): Promise<Account | null> {
-    const repo = await this.getRepository();
-    const account = await repo.findOne({ where: { id: accountId } });
-
-    if (!account) {
-      return null;
-    }
-
-    return {
-      id: account.id,
-      balance: parseFloat(account.balance.toString()),
-    };
+    return this.storage.getAccount(accountId);
   }
 
   async create(
     accountId: string,
     initialBalance: number = 0
   ): Promise<Account> {
-    const repo = await this.getRepository();
-    const account = repo.create({
-      id: accountId,
-      balance: initialBalance,
-    });
-
-    await repo.save(account);
-
-    return {
-      id: account.id,
-      balance: parseFloat(account.balance.toString()),
-    };
+    return this.storage.createAccount(accountId, initialBalance);
   }
 
   async updateBalance(accountId: string, newBalance: number): Promise<Account> {
-    const repo = await this.getRepository();
-    await repo.update({ id: accountId }, { balance: newBalance });
-
-    const account = await this.findById(accountId);
-    if (!account) {
-      throw new Error("Account not found");
-    }
-
-    return account;
+    return this.storage.updateAccountBalance(accountId, newBalance);
   }
 
   async exists(accountId: string): Promise<boolean> {
-    const repo = await this.getRepository();
-    const count = await repo.count({ where: { id: accountId } });
-    return count > 0;
+    const acc = await this.storage.getAccount(accountId);
+    return !!acc;
   }
 
   async deleteAll(): Promise<void> {
-    const repo = await this.getRepository();
-    await repo.delete({});
+    await this.storage.reset();
   }
 }

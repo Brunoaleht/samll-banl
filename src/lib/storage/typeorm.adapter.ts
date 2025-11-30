@@ -6,124 +6,88 @@ import { AccountEntity } from "@/lib/modules/account/account.entity";
 import { TransactionEntity } from "@/lib/modules/transaction/transaction.entity";
 
 export class TypeOrmAdapter implements IStorageAdapter {
-  private accountRepository: Repository<AccountEntity>;
-  private transactionRepository: Repository<TransactionEntity>;
+  private accountRepo: Repository<AccountEntity> | null = null;
+  private transactionRepo: Repository<TransactionEntity> | null = null;
 
-  constructor() {
-    // Repositories will be initialized when getDataSource is called
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.accountRepository = null as any;
+  private async init() {
+    if (this.accountRepo && this.transactionRepo) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.transactionRepository = null as any;
-  }
-
-  private async initializeRepositories(): Promise<void> {
-    const dataSource = await getDataSource();
-    this.accountRepository = dataSource.getRepository(AccountEntity);
-    this.transactionRepository = dataSource.getRepository(TransactionEntity);
+    const ds = await getDataSource();
+    this.accountRepo = ds.getRepository(AccountEntity);
+    this.transactionRepo = ds.getRepository(TransactionEntity);
   }
 
   async getAccount(accountId: string): Promise<Account | null> {
-    await this.initializeRepositories();
-    const account = await this.accountRepository.findOne({
-      where: { id: accountId },
-    });
-
-    if (!account) {
-      return null;
-    }
-
-    return {
-      id: account.id,
-      balance: parseFloat(account.balance.toString()),
-    };
+    await this.init();
+    const acc = await this.accountRepo!.findOne({ where: { id: accountId } });
+    return acc ? { id: acc.id, balance: Number(acc.balance) } : null;
   }
 
-  async createAccount(
-    accountId: string,
-    initialBalance: number = 0
-  ): Promise<Account> {
-    await this.initializeRepositories();
-    const account = this.accountRepository.create({
+  async createAccount(accountId: string, initialBalance = 0): Promise<Account> {
+    await this.init();
+
+    const account = this.accountRepo!.create({
       id: accountId,
       balance: initialBalance,
     });
 
-    await this.accountRepository.save(account);
+    await this.accountRepo!.save(account);
 
-    return {
-      id: account.id,
-      balance: parseFloat(account.balance.toString()),
-    };
+    return { id: account.id, balance: Number(account.balance) };
   }
 
-  async updateAccountBalance(
-    accountId: string,
-    newBalance: number
-  ): Promise<Account> {
-    await this.initializeRepositories();
-    await this.accountRepository.update(
-      { id: accountId },
-      { balance: newBalance }
-    );
+  async updateAccountBalance(accountId: string, newBalance: number) {
+    await this.init();
+    await this.accountRepo!.update({ id: accountId }, { balance: newBalance });
 
-    const account = await this.getAccount(accountId);
-    if (!account) {
-      throw new Error("Account not found");
-    }
-
-    return account;
+    const updated = await this.getAccount(accountId);
+    if (!updated) throw new Error("Account not found");
+    return updated;
   }
 
-  async addTransaction(
-    transaction: Omit<Transaction, "id" | "timestamp">
-  ): Promise<Transaction> {
-    await this.initializeRepositories();
-    const id = `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  async addTransaction(tx: Omit<Transaction, "id" | "timestamp">) {
+    await this.init();
 
-    const transactionEntity = this.transactionRepository.create({
+    const id = `txn_${Date.now()}`;
+    const entity = this.transactionRepo!.create({
       id,
-      type: transaction.type,
-      accountId: transaction.accountId,
-      destinationAccountId: transaction.destinationAccountId,
-      amount: transaction.amount,
+      ...tx,
     });
 
-    await this.transactionRepository.save(transactionEntity);
+    await this.transactionRepo!.save(entity);
 
     return {
-      id,
-      ...transaction,
-      timestamp: transactionEntity.timestamp,
+      id: entity.id,
+      type: entity.type,
+      accountId: entity.accountId,
+      destinationAccountId: entity.destinationAccountId || undefined,
+      amount: Number(entity.amount),
+      timestamp: entity.timestamp,
     };
   }
 
-  async getTransactions(
-    accountId: string,
-    limit: number = 10
-  ): Promise<Transaction[]> {
-    await this.initializeRepositories();
-    const transactions = await this.transactionRepository.find({
+  async getTransactions(accountId: string, limit = 10) {
+    await this.init();
+
+    const txs = await this.transactionRepo!.find({
       where: [{ accountId }, { destinationAccountId: accountId }],
       order: { timestamp: "DESC" },
       take: limit,
     });
 
-    return transactions.map((tx) => ({
+    return txs.map((tx) => ({
       id: tx.id,
       type: tx.type,
       accountId: tx.accountId,
       destinationAccountId: tx.destinationAccountId || undefined,
-      amount: parseFloat(tx.amount.toString()),
+      amount: Number(tx.amount),
       timestamp: tx.timestamp,
     }));
   }
 
-  async reset(): Promise<void> {
-    await this.initializeRepositories();
-    // Delete transactions first due to foreign key constraints
-    await this.transactionRepository.delete({});
-    await this.accountRepository.delete({});
+  async reset() {
+    await this.init();
+    await this.transactionRepo!.clear();
+    await this.accountRepo!.clear();
   }
 }

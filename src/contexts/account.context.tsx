@@ -60,6 +60,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
       setBalance(response.balance);
     } catch (err) {
       console.error("Failed to load balance:", err);
+      throw err;
     }
   }, [accountId, getBalance]);
 

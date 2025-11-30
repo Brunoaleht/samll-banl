@@ -21,6 +21,22 @@ export const DashboardContainer: FC = () => {
     }
   }, [isAuthenticated, router]);
 
+  const handleLoadBalance = async () => {
+    try {
+      await loadBalance();
+    } catch (err: unknown) {
+      console.error("Load balance error:", err);
+      const apiError = err as ApiError;
+      const httpCode = apiError.status;
+      const apiMessage = apiError.error || "Erro desconhecido";
+      createAlert({
+        message: "Erro ao carregar saldo",
+        apiMessage,
+        httpCode,
+      });
+    }
+  };
+
   const handleLogout = () => {
     logout();
     router.push("/login");
@@ -60,7 +76,7 @@ export const DashboardContainer: FC = () => {
     accountId,
     onAccountIdChange: setAccountId,
     loading,
-    onLoadBalance: loadBalance,
+    onLoadBalance: handleLoadBalance,
     onLogout: handleLogout,
     onReset: handleReset,
   };

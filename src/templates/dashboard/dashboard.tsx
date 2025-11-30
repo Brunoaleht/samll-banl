@@ -25,21 +25,6 @@ export function Dashboard({
   onLogout,
   loading,
 }: DashboardProps) {
-  const [tempAccountId, setTempAccountId] = useState(accountId || "");
-
-  const handleAccountIdSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (tempAccountId) {
-      onAccountIdChange(tempAccountId);
-    }
-  };
-
-  useEffect(() => {
-    if (accountId) {
-      onLoadBalance();
-    }
-  }, [accountId, onLoadBalance]);
-
   return (
     <div className={S.getContainerClasses()}>
       <header className={S.getHeaderClasses()}>
@@ -54,22 +39,19 @@ export function Dashboard({
       <main className={S.getContentClasses()}>
         <section className={S.getSectionClasses()}>
           <h2 className={S.getSectionTitleClasses()}>Configurar Conta</h2>
-          <form
-            className={S.getAccountFormClasses()}
-            onSubmit={handleAccountIdSubmit}
-          >
+          <div className={S.getAccountFormClasses()}>
             <Input
               label="ID da Conta"
               type="text"
-              value={tempAccountId}
-              onChange={(e) => setTempAccountId(e.target.value)}
+              value={`${accountId}`}
+              onChange={(e) => onAccountIdChange(e.target.value)}
               placeholder="Ex: 100"
               required
             />
-            <Button type="submit" disabled={loading}>
-              Carregar Conta
+            <Button type="submit" disabled={loading} onClick={onLoadBalance}>
+              Conta
             </Button>
-          </form>
+          </div>
         </section>
 
         {!!accountId && (
